@@ -109,6 +109,7 @@ public class MainApplication {
                         System.out.println("1. Add Supplier");
                         System.out.println("2. Edit Supplier");
                         System.out.println("3. Delete Supplier");
+                        System.out.println("4. List Suppliers");
                         // ... other options ...
 
                         Administrator admin = (Administrator) loggedInUser;
@@ -125,6 +126,10 @@ public class MainApplication {
                                 break;
                             case 3:
                                 deleteSupplier(scanner, admin); // Call the deleteSupplier method in Administrator
+                                break;
+
+                            case 4: // Add this case
+                                listSuppliers(admin.getSupplierList());
                                 break;
                             // ... handle other cases ...
                         }
@@ -271,6 +276,19 @@ public class MainApplication {
 
         admin.deleteSupplier(supplierId); // Call the deleteSupplier method in Administrator
         System.out.println("Supplier deleted successfully.");
+
+    }
+
+
+
+
+    private static void listSuppliers(List<Supplier> supplierList) {
+        System.out.println("List of Suppliers:");
+        for (Supplier supplier : supplierList) {
+            System.out.println("Supplier ID: " + supplier.getSupplierId());
+            System.out.println("Supplier Name: " + supplier.getSupplierName());
+            System.out.println("------------------------------");
+        }
     }
 
     private static boolean isUsernameTaken(String username) {

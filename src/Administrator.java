@@ -142,6 +142,11 @@ public class Administrator extends User implements ItemEntry {
         return null;
     }
 
+    public List<Supplier> getSupplierList() {
+        return supplierList;
+    }
+
+
 
     // Other methods and logic for Administrator
 }
