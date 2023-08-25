@@ -1,7 +1,5 @@
 # project1
 POM_System
-Certainly! I'll provide you with a step-by-step guide to help you tackle your Java project. Given the complexity and length of the project, I'll break down the instructions into manageable steps for each functionality. Let's start with the first functionality:
-
 ### Login Access
 
 1. **Define User Classes:**
