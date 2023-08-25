@@ -73,6 +73,7 @@ public class MainApplication {
                 System.out.println("2. Edit Item");
                 System.out.println("3. Delete Item");
                 System.out.println("4. List Items");
+                System.out.println("5. Supplier Entry");
                 System.out.println("5. Back to Main Menu");
                 System.out.print("Enter your choice: ");
                 int itemEntryChoice = scanner.nextInt();
@@ -100,10 +101,38 @@ public class MainApplication {
                         }
                         break;
                     case 4:
+
                         listItems(itemList);
                         break;
                     case 5:
-                        // Back to main menu
+                        System.out.println("Supplier Entry Menu:");
+                        System.out.println("1. Add Supplier");
+                        System.out.println("2. Edit Supplier");
+                        System.out.println("3. Delete Supplier");
+                        // ... other options ...
+
+                        Administrator admin = (Administrator) loggedInUser;
+                        int supplierEntryChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline character
+
+                        switch (supplierEntryChoice) {
+                            case 1:
+                                Supplier newSupplier = createNewSupplier(scanner);
+                                admin.addSupplier(newSupplier); // Call the addSupplier method in Administrator
+                                break;
+                            case 2:
+                                editSupplier(scanner, admin); // Call the editSupplier method in Administrator
+                                break;
+                            case 3:
+                                deleteSupplier(scanner, admin); // Call the deleteSupplier method in Administrator
+                                break;
+                            // ... handle other cases ...
+                        }
+
+
+
+                    case 6:
+
                         break;
                     default:
                         System.out.println("Invalid choice.");
@@ -213,6 +242,36 @@ public class MainApplication {
     }
 
 
+    private static Supplier createNewSupplier(Scanner scanner) {
+        System.out.print("Enter supplier ID: ");
+        String supplierId = scanner.nextLine();
+
+        System.out.print("Enter supplier name: ");
+        String supplierName = scanner.nextLine();
+
+        return new Supplier(supplierId, supplierName);
+    }
+
+
+    private static void editSupplier(Scanner scanner, Administrator admin) {
+        System.out.print("Enter supplier ID to edit: ");
+        String supplierId = scanner.nextLine();
+
+        System.out.print("Enter new supplier name: ");
+        String newSupplierName = scanner.nextLine();
+
+        Supplier updatedSupplier = new Supplier(supplierId, newSupplierName);
+        admin.editSupplier(supplierId, updatedSupplier); // Call the editSupplier method in Administrator
+        System.out.println("Supplier edited successfully.");
+    }
+
+    private static void deleteSupplier(Scanner scanner, Administrator admin) {
+        System.out.print("Enter supplier ID to delete: ");
+        String supplierId = scanner.nextLine();
+
+        admin.deleteSupplier(supplierId); // Call the deleteSupplier method in Administrator
+        System.out.println("Supplier deleted successfully.");
+    }
 
     private static boolean isUsernameTaken(String username) {
         return userList.stream().anyMatch(user -> user.getUsername().equals(username));

@@ -6,6 +6,8 @@ public class Administrator extends User implements ItemEntry {
 
     List<Item> itemList = new ArrayList<>();
     List<User> userList = new ArrayList<>();
+
+    private List<Supplier> supplierList = new ArrayList<>();
     // Constructor
     public Administrator(String username, String password, List<Item> itemList, List<User> userList) {
         super(username, password, "Administrator");
@@ -102,6 +104,42 @@ public class Administrator extends User implements ItemEntry {
         } else {
             System.out.println("Item not found for editing: " + itemCode);
         }
+    }
+
+    public void addSupplier(Supplier newSupplier) {
+        supplierList.add(newSupplier);
+        System.out.println("Supplier added successfully.");
+    }
+
+    public void editSupplier(String supplierId, Supplier updatedSupplier) {
+        Supplier foundSupplier = findSupplierById(supplierId);
+        if (foundSupplier != null) {
+            // Update the existing supplier with updated attributes
+            foundSupplier.setSupplierName(updatedSupplier.getSupplierName());
+            System.out.println("Supplier edited successfully.");
+        } else {
+            System.out.println("Supplier not found. Edit failed.");
+        }
+    }
+
+    public void deleteSupplier(String supplierId) {
+        Supplier foundSupplier = findSupplierById(supplierId);
+        if (foundSupplier != null) {
+            supplierList.remove(foundSupplier);
+            System.out.println("Supplier deleted successfully.");
+        } else {
+            System.out.println("Supplier not found. Delete failed.");
+        }
+    }
+
+    // Helper method to find a supplier by ID
+    private Supplier findSupplierById(String supplierId) {
+        for (Supplier supplier : supplierList) {
+            if (supplier.getSupplierId().equals(supplierId)) {
+                return supplier;
+            }
+        }
+        return null;
     }
 
 
