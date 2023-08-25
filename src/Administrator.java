@@ -9,16 +9,16 @@ public class Administrator extends User implements ItemEntry {
     // Constructor
     public Administrator(String username, String password, List<Item> itemList, List<User> userList) {
         super(username, password, "Administrator");
-        this.itemList = itemList;
-        this.userList = userList;
+        this.itemList = itemList != null ? itemList : new ArrayList<>();
+        this.userList = userList != null ? userList : new ArrayList<>();
     }
 
-    // Constructor without itemList and userList
     public Administrator(String username, String password) {
         super(username, password, "Administrator");
-        this.itemList = null; // Or you can initialize it to an empty list
-        this.userList = null; // Or you can initialize it to an empty list
+        this.itemList = new ArrayList<>();
+        this.userList = new ArrayList<>();
     }
+
 
     // Setter methods for itemList and userList
     public void setItemList(List<Item> itemList) {
