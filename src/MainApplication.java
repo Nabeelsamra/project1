@@ -74,7 +74,8 @@ public class MainApplication {
                 System.out.println("3. Delete Item");
                 System.out.println("4. List Items");
                 System.out.println("5. Supplier Entry");
-                System.out.println("5. Back to Main Menu");
+                System.out.println("6. Back to Main Menu");
+                System.out.println("7. Record Daily Sales");
                 System.out.print("Enter your choice: ");
                 int itemEntryChoice = scanner.nextInt();
                 scanner.nextLine(); // Consume the newline character
@@ -138,6 +139,13 @@ public class MainApplication {
 
                     case 6:
 
+                        break;
+
+
+                    case 7:
+                        admin = (Administrator) loggedInUser;
+
+                        recordDailySales(scanner, admin);
                         break;
                     default:
                         System.out.println("Invalid choice.");
@@ -317,6 +325,18 @@ public class MainApplication {
         }
 
         return newItem;
+    }
+
+
+    private static void recordDailySales(Scanner scanner, Administrator admin) {
+        System.out.print("Enter item code: ");
+        String itemCode = scanner.nextLine();
+
+        System.out.print("Enter amount sold: ");
+        double amountSold = scanner.nextDouble();
+        scanner.nextLine(); // Consume the newline character
+
+        admin.recordDailySales(itemCode, amountSold);
     }
 
 

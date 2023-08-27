@@ -142,6 +142,31 @@ public class Administrator extends User implements ItemEntry {
         return null;
     }
 
+    public void recordDailySales(String itemCode, double amountSold) {
+        Item item = findItemByCode(itemCode);
+        if (item != null) {
+            item.updateTotalSales(amountSold);
+            System.out.println("Daily sales recorded for item: " + item.getItemName());
+        } else {
+            System.out.println("Item not found for recording daily sales: " + itemCode);
+        }
+    }
+
+
+    private Item findItemByCode(String itemCode) {
+        for (Item item : itemList) {
+            if (item.getItemCode().equals(itemCode)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+
+
+
+
+
     public List<Supplier> getSupplierList() {
         return supplierList;
     }

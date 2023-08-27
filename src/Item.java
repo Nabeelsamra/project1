@@ -2,11 +2,21 @@ public class Item {
     private String itemCode;
     private String itemName;
     private String supplierId;
+    private double totalSales;
 
     public Item(String itemCode, String itemName, String supplierId) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.supplierId = supplierId;
+        this.totalSales = 0.0; // Initialize totalSales to 0.0
+    }
+
+    public double getTotalSales() {
+        return totalSales;
+    }
+
+    public void updateTotalSales(double amountSold) {
+        totalSales += amountSold;
     }
 
     // Getters and setters for item attributes
