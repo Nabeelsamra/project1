@@ -2,6 +2,8 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.time.LocalDate;
+
 public class MainApplication {
     private static  List<User> userList = new ArrayList<>(); // Store registered users
     private static  List<Item> itemList = new ArrayList<>(); // Store items
@@ -43,7 +45,7 @@ public class MainApplication {
 
     private static void initializeUsers() {
         // You can load users from a file or manually add initial users here
-        userList.add(new SalesManager("salesmanager1", "password1"));
+        userList.add(new SalesManager("salesmanager1", "password1", null, null));
         userList.add(new PurchaseManager("purchasemanager1", "password2"));
         userList.add(new Administrator("admin", "adminpassword", itemList, userList));
     }
@@ -76,6 +78,7 @@ public class MainApplication {
                 System.out.println("5. Supplier Entry");
                 System.out.println("6. Back to Main Menu");
                 System.out.println("7. Record Daily Sales");
+                System.out.println("8. Create Purchase Requisition");
                 System.out.print("Enter your choice: ");
                 int itemEntryChoice = scanner.nextInt();
                 scanner.nextLine(); // Consume the newline character
@@ -88,7 +91,7 @@ public class MainApplication {
                         System.out.println("Item added successfully.");
                         break;
                     case 2:
-                        if (user instanceof Administrator) {
+                        if (user instanceof Administrator || user instanceof SalesManager ) {
                             editItem(scanner, (Administrator) user); // Pass the admin user
                         } else {
                             System.out.println("You don't have permission to edit items.");
@@ -147,6 +150,16 @@ public class MainApplication {
 
                         recordDailySales(scanner, admin);
                         break;
+
+
+
+                    case 8:
+                        if (user instanceof Administrator) {
+                            createPurchaseRequisition(scanner, (Administrator) loggedInUser);
+                        } else {
+                            System.out.println("You don't have permission to create Purchase Requisitions.");
+                        }
+                        break;
                     default:
                         System.out.println("Invalid choice.");
                 }
@@ -176,11 +189,11 @@ public class MainApplication {
 
         User newUser = null;
         if ("SalesManager".equalsIgnoreCase(newUserType)) {
-            newUser = new SalesManager(newUsername, newPassword);
+            newUser = new SalesManager(newUsername, newPassword, itemList, userList);
         } else if ("PurchaseManager".equalsIgnoreCase(newUserType)) {
             newUser = new PurchaseManager(newUsername, newPassword);
         } else if ("Administrator".equalsIgnoreCase(newUserType)) {
-            newUser = new Administrator(newUsername, newPassword);
+            newUser = new Administrator(newUsername, newPassword, itemList, userList);
         } else {
             System.out.println("Invalid user type. Registration failed.");
             return;
@@ -190,6 +203,11 @@ public class MainApplication {
         System.out.println(newUserType + " registered successfully.");
         saveUserListToFile(); // Save the updated user list to a text file
     }
+
+
+
+
+
 
     private static void listItems(List<Item> itemList) {
         System.out.println("List of Items:");
@@ -202,38 +220,48 @@ public class MainApplication {
     }
 
 
-    private static void editItem(Scanner scanner, Administrator admin) {
+    private static void editItem(Scanner scanner, User user) {
         System.out.print("Enter item code to edit: ");
         String itemCode = scanner.nextLine();
 
-        // Check if the logged-in user is an administrator
-        if (loggedInUser instanceof Administrator) {
-            Administrator adminUser = (Administrator) loggedInUser;
-            Item foundItem = findItemByCode(itemCode);
-            if (foundItem != null) {
-                System.out.print("Enter new item name: ");
-                String newItemName = scanner.nextLine();
+        Item foundItem = findItemByCode(itemCode);
+        if (foundItem != null) {
+            System.out.print("Enter new item name: ");
+            String newItemName = scanner.nextLine();
 
-                System.out.print("Enter new supplier ID: ");
-                String newSupplierId = scanner.nextLine();
+            System.out.print("Enter new supplier ID: ");
+            String newSupplierId = scanner.nextLine();
 
-                Item updatedItem = new Item(itemCode, newItemName, newSupplierId);
+            Item updatedItem = new Item(itemCode, newItemName, newSupplierId);
+
+            if (user instanceof Administrator) {
+                Administrator adminUser = (Administrator) user;
                 adminUser.editItem(itemCode, updatedItem);
-                adminUser.editItemInItemList(itemCode, updatedItem); // Update item in itemList
-                System.out.println("Item edited successfully.");
+                adminUser.editItemInItemList(itemCode, updatedItem);
+            } else if (user instanceof SalesManager) {
+                SalesManager salesManagerUser = (SalesManager) user;
+                salesManagerUser.editItem(itemCode, updatedItem);
+                salesManagerUser.editItemInItemList(itemCode, updatedItem);
             } else {
-                System.out.println("Item not found for editing: " + itemCode);
+                System.out.println("You don't have permission to edit items.");
             }
+
+            System.out.println("Item edited successfully.");
+        } else {
+            System.out.println("Item not found for editing: " + itemCode);
         }
     }
+
+
+
+
 
     private static void deleteItem(Scanner scanner, Administrator admin) {
         System.out.print("Enter item code to delete: ");
         String itemCode = scanner.nextLine();
 
         // Check if the logged-in user is an administrator
-        if (loggedInUser instanceof Administrator) {
-            Administrator adminUser = (Administrator) loggedInUser;
+        if (loggedInUser instanceof Administrator adminUser) {
             Item foundItem = findItemByCode(itemCode);
             if (foundItem != null) {
                 adminUser.deleteItem(itemCode);
@@ -338,6 +366,38 @@ public class MainApplication {
 
         admin.recordDailySales(itemCode, amountSold);
     }
+
+
+
+    private static void createPurchaseRequisition(Scanner scanner, Administrator admin) {
+        System.out.print("Enter item code: ");
+        String itemCode = scanner.nextLine();
+
+        System.out.print("Enter quantity: ");
+        int quantity = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        LocalDate requiredDate = LocalDate.now().plusDays(7); // Example: Required date is set to 7 days from now
+
+        String supplierCode = admin.getSupplierCodeForItem(itemCode);
+        if (supplierCode != null) {
+            String prId = generatePRId(); // Generate a unique PR identifier
+            String smName = loggedInUser.getUsername(); // Get the name of the Sales Manager
+
+            PurchaseRequisition pr = new PurchaseRequisition(prId, itemCode, quantity, requiredDate, supplierCode, smName);
+            // Save the PR or process it as needed
+            System.out.println("Purchase Requisition created successfully.");
+        } else {
+            System.out.println("Item or supplier not found for the given item code.");
+        }
+    }
+
+    private static String generatePRId() {
+        // Generate a unique PR identifier based on your logic
+        // Example: You can use a combination of timestamp and a random number
+        return "PR" + System.currentTimeMillis() + "-" + (int) (Math.random() * 1000);
+    }
+
 
 
 

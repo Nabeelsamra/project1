@@ -4,11 +4,14 @@ public class Item {
     private String supplierId;
     private double totalSales;
 
+
+
     public Item(String itemCode, String itemName, String supplierId) {
         this.itemCode = itemCode;
         this.itemName = itemName;
         this.supplierId = supplierId;
         this.totalSales = 0.0; // Initialize totalSales to 0.0
+
     }
 
     public double getTotalSales() {
@@ -43,6 +46,8 @@ public class Item {
     public void setSupplierId(String supplierId) {
         this.supplierId = supplierId;
     }
+
+
 
     @Override
     public String toString() {

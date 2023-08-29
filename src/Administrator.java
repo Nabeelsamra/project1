@@ -163,6 +163,18 @@ public class Administrator extends User implements ItemEntry {
     }
 
 
+    public String getSupplierCodeForItem(String itemCode) {
+        Item item = findItemByCode(itemCode);
+        if (item != null) {
+            Supplier supplier = findSupplierById(item.getSupplierId());
+            if (supplier != null) {
+                return supplier.getSupplierId();
+            }
+        }
+        return null; // Return null if item or supplier not found
+    }
+
+
 
 
 
